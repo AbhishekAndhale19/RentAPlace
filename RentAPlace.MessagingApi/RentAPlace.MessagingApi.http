@@ -1,0 +1,6 @@
+@RentAPlace.MessagingApi_HostAddress = http://localhost:5005
+
+GET {{RentAPlace.MessagingApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

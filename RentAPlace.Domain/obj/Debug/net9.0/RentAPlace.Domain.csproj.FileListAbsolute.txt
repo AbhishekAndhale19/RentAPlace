@@ -1,0 +1,11 @@
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\bin\Debug\net9.0\RentAPlace.Domain.deps.json
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\bin\Debug\net9.0\RentAPlace.Domain.dll
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\bin\Debug\net9.0\RentAPlace.Domain.pdb
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\obj\Debug\net9.0\RentAPlace.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\obj\Debug\net9.0\RentAPlace.Domain.AssemblyInfoInputs.cache
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\obj\Debug\net9.0\RentAPlace.Domain.AssemblyInfo.cs
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\obj\Debug\net9.0\RentAPlace.Domain.csproj.CoreCompileInputs.cache
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\obj\Debug\net9.0\RentAPlace.Domain.dll
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\obj\Debug\net9.0\refint\RentAPlace.Domain.dll
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\obj\Debug\net9.0\RentAPlace.Domain.pdb
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\obj\Debug\net9.0\ref\RentAPlace.Domain.dll

@@ -88,9 +88,10 @@ namespace RentAPlace.Application.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("IsAdmin")
+                    b.Property<bool>("IsOwner")
                         .HasColumnType("bit");
 
                     b.Property<string>("PasswordHash")

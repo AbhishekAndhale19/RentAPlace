@@ -8,7 +8,8 @@ namespace RentAPlace.Domain.Models {
 
         public DbSet<User> Users { get; set; }
         public DbSet<Property> Properties { get; set; }
-        public DbSet<Reservation>Reservations{ get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -25,7 +26,7 @@ namespace RentAPlace.Domain.Models {
                 .HasOne(r => r.User)
                 .WithMany(u => u.Reservations)
                 .HasForeignKey(r => r.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict); // avoid multiple cascade paths
 
             // Property → Reservation (1-to-many)
             modelBuilder.Entity<Reservation>()

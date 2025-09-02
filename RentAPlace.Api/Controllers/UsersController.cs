@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RentAPlace.Domain.Models;
+using System.Security.Claims;
 
 namespace RentAPlace.Api.Controllers
 {
@@ -10,29 +11,59 @@ namespace RentAPlace.Api.Controllers
     public class UsersController : ControllerBase
     {
         private readonly RentAPlaceDbContext _db;
-        public UsersController(RentAPlaceDbContext db) { _db = db; }
 
-        // Public: get own profile (requires auth)
+        public UsersController(RentAPlaceDbContext db)
+        {
+            _db = db;
+        }
+
+        // ========================
+        // GET: api/users/me
+        // Get logged-in user's profile
+        // ========================
         [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> Me()
         {
-            var sub = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
-                      ?? User.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub)?.Value;
-            if (sub == null) return Unauthorized();
-            var id = Guid.Parse(sub);
-            var user = await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
-            if (user == null) return NotFound();
-            return Ok(new { user.Id, user.FullName, user.Email, user.IsAdmin });
+            // Get user ID from token (either ClaimTypes.NameIdentifier or "sub")
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                         ?? User.FindFirstValue("sub");
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "Invalid or missing token." });
+
+            if (!Guid.TryParse(userId, out var guidId))
+                return Unauthorized(new { message = "Invalid user identifier in token." });
+
+            var user = await _db.Users
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync(u => u.Id == guidId);
+
+            if (user == null)
+                return NotFound(new { message = "User not found." });
+
+            return Ok(new UserResponse(user.Id, user.FullName, user.Email, user.IsOwner));
         }
 
-        // Admin only: list all users
-        [Authorize(Roles = "Admin")]
+        // ========================
+        // GET: api/users
+        // List all users (Owner only)
+        // ========================
+        [Authorize(Roles = "Owner")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var users = await _db.Users.Select(u => new { u.Id, u.FullName, u.Email, u.IsAdmin }).ToListAsync();
+            var users = await _db.Users
+                                 .AsNoTracking()
+                                 .Select(u => new UserResponse(u.Id, u.FullName, u.Email, u.IsOwner))
+                                 .ToListAsync();
+
             return Ok(users);
         }
     }
+
+    // ========================
+    // DTOs
+    // ========================
+    public record UserResponse(Guid Id, string FullName, string Email, bool IsOwner);
 }

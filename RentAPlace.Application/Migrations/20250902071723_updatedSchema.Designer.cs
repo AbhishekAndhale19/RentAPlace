@@ -12,8 +12,8 @@ using RentAPlace.Domain.Models;
 namespace RentAPlace.Application.Migrations
 {
     [DbContext(typeof(RentAPlaceDbContext))]
-    [Migration("20250901180354_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250902071723_updatedSchema")]
+    partial class updatedSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,9 +91,10 @@ namespace RentAPlace.Application.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("IsAdmin")
+                    b.Property<bool>("IsOwner")
                         .HasColumnType("bit");
 
                     b.Property<string>("PasswordHash")

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RentAPlace.Domain.Models;
+using RentAPlace.Application.DTOs.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RentAPlace.Api.Controllers
 {
@@ -23,15 +25,13 @@ namespace RentAPlace.Api.Controllers
 
         // POST: api/auth/register
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequest dto)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest dto)
         {
-            // simple validation
-            if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password) || string.IsNullOrWhiteSpace(dto.FullName))
-                return BadRequest("FullName, Email and Password are required.");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            // check existing
             if (await _db.Users.AnyAsync(u => u.Email == dto.Email))
-                return Conflict("Email already registered.");
+                return Conflict(new { message = "Email already registered." });
 
             var user = new User
             {
@@ -39,34 +39,42 @@ namespace RentAPlace.Api.Controllers
                 FullName = dto.FullName,
                 Email = dto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                IsAdmin = dto.IsAdmin // allow creating admin via request if needed (manage carefully)
+                IsOwner = dto.IsOwner
             };
 
             _db.Users.Add(user);
             await _db.SaveChangesAsync();
 
-            return Ok(new { message = "Registered", userId = user.Id });
+            return Ok(new
+            {
+                message = "Registered successfully",
+                userId = user.Id,
+                role = user.IsOwner ? "Owner" : "User"
+            });
         }
 
         // POST: api/auth/login
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest dto)
+        public async Task<IActionResult> Login([FromBody] LoginRequest dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password))
-                return BadRequest("Email and Password are required.");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
-            if (user == null) return Unauthorized("Invalid credentials");
-
-            if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-                return Unauthorized("Invalid credentials");
+            if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+                return Unauthorized(new { message = "Invalid credentials" });
 
             var token = CreateToken(user);
+
+            //session
+            HttpContext.Session.SetString("UserId", user.Id.ToString());
+            HttpContext.Session.SetString("UserEmail", user.Email);
+            HttpContext.Session.SetString("UserRole", user.IsOwner ? "Owner" : "User");
 
             return Ok(new
             {
                 accessToken = token,
-                user = new { user.Id, user.FullName, user.Email, user.IsAdmin }
+                user = new { user.Id, user.FullName, user.Email, isOwner = user.IsOwner }
             });
         }
 
@@ -79,9 +87,10 @@ namespace RentAPlace.Api.Controllers
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.FullName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User")
+                new Claim(ClaimTypes.Role, user.IsOwner ? "Owner" : "User")
             };
 
             var token = new JwtSecurityToken(
@@ -94,9 +103,13 @@ namespace RentAPlace.Api.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-    }
 
-    // DTOs
-    public record RegisterRequest(string FullName, string Email, string Password, bool IsAdmin = false);
-    public record LoginRequest(string Email, string Password);
+        [Authorize]
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return Ok(new { message = "Logged out Successfully" });
+        }
+    }
 }

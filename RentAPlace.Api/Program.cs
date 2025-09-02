@@ -1,23 +1,40 @@
-using Microsoft.EntityFrameworkCore;
-using RentAPlace.Domain.Models;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using RentAPlace.Domain.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
-// OpenAPI
-builder.Services.AddOpenApi();
-
-// DbContext registration
-builder.Services.AddDbContext<RentAPlaceDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+// Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular",
+    policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
+    });
+});
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.IdleTimeout = TimeSpan.FromMinutes(60); // session timeout
+});
+
+
+// DbContext registration (ensure connection string is in appsettings.json)
+builder.Services.AddDbContext<RentAPlaceDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // JWT configuration
 var jwtCfg = builder.Configuration.GetSection("Jwt");
@@ -29,7 +46,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false; // set true in production
+    options.RequireHttpsMetadata = false; // true in production
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -44,16 +61,23 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
+// Middleware order: Swagger -> Authentication -> Authorization
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+
+
 app.UseHttpsRedirection();
+app.UseCors("AllowAngular");//for connecting frontend and backend
+app.UseAuthentication(); 
 app.UseAuthorization();
-app.UseAuthentication();
+app.UseSession();
 app.MapControllers();
+app.MapGet("/", () => "Backend running...");
 app.Run();

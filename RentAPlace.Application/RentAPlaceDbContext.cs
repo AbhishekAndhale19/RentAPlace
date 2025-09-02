@@ -36,5 +36,3 @@ namespace RentAPlace.Domain.Models {
         }
     }
 }
-
-

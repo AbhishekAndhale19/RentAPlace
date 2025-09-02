@@ -15,3 +15,4 @@ C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Application\obj\Debug\net9.0\Ren
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Application\obj\Debug\net9.0\ref\RentAPlace.Application.dll
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Application\bin\Debug\net9.0\RentAPlace.Application.runtimeconfig.json
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Application\obj\Debug\net9.0\RentAPlace.Application.genruntimeconfig.cache
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Application\obj\Debug\net9.0\RentAPlace.Application.sourcelink.json

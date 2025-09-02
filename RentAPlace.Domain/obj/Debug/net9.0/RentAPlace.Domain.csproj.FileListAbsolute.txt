@@ -9,3 +9,4 @@ C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\obj\Debug\net9.0\RentAPla
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\obj\Debug\net9.0\refint\RentAPlace.Domain.dll
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\obj\Debug\net9.0\RentAPlace.Domain.pdb
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\obj\Debug\net9.0\ref\RentAPlace.Domain.dll
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Domain\obj\Debug\net9.0\RentAPlace.Domain.sourcelink.json

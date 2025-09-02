@@ -179,3 +179,4 @@ C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\obj\Debug\net9.0\refint\Rent
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\obj\Debug\net9.0\RentAPlace.Api.pdb
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\obj\Debug\net9.0\RentAPlace.Api.genruntimeconfig.cache
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\obj\Debug\net9.0\ref\RentAPlace.Api.dll
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\obj\Debug\net9.0\RentAPlace.Api.sourcelink.json

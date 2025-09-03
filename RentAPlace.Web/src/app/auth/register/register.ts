@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterModule,Router } from '@angular/router';
 import { Auth } from '../../services/auth';
-import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-register',
   standalone: true,
+  imports: [FormsModule, CommonModule,RouterModule],
   templateUrl: './register.html',
-  styleUrls: ['./register.css'],
-  imports: [FormsModule, CommonModule]
+  styleUrls: ['./register.css']
 })
 export class Register {
   fullName = '';
@@ -17,23 +18,27 @@ export class Register {
   password = '';
   isOwner = false;
   error = '';
+  success = ''; // <-- added success property
 
-  constructor(private auth: Auth, private router: Router) {}
+  constructor(
+    private auth: Auth,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: any
+  ) {}
 
-  onRegister(form: any) {
+  onRegister(form: NgForm) {
   if (form.invalid) {
-    // mark all fields as touched to show validation
     Object.values(form.controls).forEach((control: any) => control.markAsTouched());
     return;
   }
 
   this.auth.register(this.fullName, this.email, this.password, this.isOwner).subscribe({
-    next: (res) => {
-      localStorage.setItem('token', res.accessToken);
-      this.router.navigate(['/dashboard']);
+    next: () => {
+      alert('Registration successful! Please login now.');
+      this.router.navigate(['/login']);
     },
     error: () => {
-      this.error = 'Registration failed';
+      alert('Registration failed. Try again.');
     }
   });
 }

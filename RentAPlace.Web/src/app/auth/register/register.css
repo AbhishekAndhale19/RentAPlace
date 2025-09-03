@@ -1,0 +1,27 @@
+h2 {
+    margin: 1.5rem 0 .5rem;
+}
+
+form {
+    display: grid;
+    gap: .75rem;
+    max-width: 420px;
+}
+
+input {
+    padding: .6rem .7rem;
+    border-radius: .5rem;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: .6rem 1rem;
+    border-radius: .5rem;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.error {
+    color: #c00;
+    font-size: .9rem;
+}

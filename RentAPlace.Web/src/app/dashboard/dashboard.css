@@ -1,56 +1,39 @@
 .layout {
-  display: flex;
-  height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
 }
 
 .sidebar {
-  width: 220px;
-  background: #2c3e50;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
+  background: #f6f6f6;
+  padding: 1rem;
+  border-right: 1px solid #e8e8e8;
 }
 
 .sidebar h2 {
-  margin-bottom: 20px;
-  font-size: 20px;
+  margin-top: 0;
 }
 
 .sidebar ul {
   list-style: none;
   padding: 0;
-  flex-grow: 1;
 }
 
-.sidebar ul li {
-  margin: 10px 0;
+.sidebar li {
+  margin: .5rem 0;
 }
 
-.sidebar ul li a {
-  color: white;
-  text-decoration: none;
-}
-
-.sidebar ul li a.active {
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-.sidebar button {
-  background: #e74c3c;
-  border: none;
-  color: white;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.sidebar button:hover {
-  background: #c0392b;
+.sidebar a.active {
+  font-weight: 700;
 }
 
 .content {
-  flex-grow: 1;
-  padding: 20px;
+  padding: 1rem 2rem;
+}
+
+button {
+  padding: .5rem .9rem;
+  border: 1px solid #ccc;
+  border-radius: .5rem;
+  cursor: pointer;
 }

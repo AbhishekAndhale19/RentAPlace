@@ -1,22 +1,24 @@
 .container {
+  max-width: 720px;
+  margin: 4rem auto;
   text-align: center;
-  margin-top: 100px;
+  padding: 1rem;
 }
 
-h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
+.buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
 }
 
-p {
-  font-size: 1.2rem;
-  margin-bottom: 40px;
-  color: #444;
-}
-
-.buttons button {
-  margin: 0 10px;
-  padding: 10px 20px;
-  font-size: 1rem;
+button {
+  padding: .6rem 1rem;
+  border-radius: .5rem;
+  border: 1px solid #ccc;
   cursor: pointer;
+}
+
+button:hover {
+  border-color: #999;
 }

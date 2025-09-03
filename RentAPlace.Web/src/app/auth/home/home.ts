@@ -1,24 +1,23 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { Auth } from '../../services/auth';  
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  standalone:true,
-  imports: [CommonModule,FormsModule],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './home.html',
-  styleUrl: './home.css'
+  styleUrls: ['./home.css']
 })
 export class Home {
-  constructor(private router: Router) {}
-
-  goToLogin() {
-    this.router.navigate(['/login']);
+  constructor(private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {
+    // If already logged in we can redirect to dashboard
+    if (isPlatformBrowser(this.platformId)) {
+      const token = sessionStorage.getItem('token');
+      if (token) this.router.navigate(['/dashboard']);
+    }
   }
 
-  goToRegister() {
-    this.router.navigate(['/register']);
-  }
+  goToLogin() { this.router.navigate(['/login']); }
+  goToRegister() { this.router.navigate(['/register']); }
 }

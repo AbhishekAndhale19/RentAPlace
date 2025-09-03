@@ -62,8 +62,7 @@
             },
             "development": {
               "buildTarget": "RentAPlace.Web:build:development"
-             }
-           
+            }
           },
           "defaultConfiguration": "development"
         },

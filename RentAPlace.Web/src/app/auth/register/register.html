@@ -1,45 +1,27 @@
 <h2>Register</h2>
 <form #registerForm="ngForm" (ngSubmit)="onRegister(registerForm)">
-  <input type="text" 
-         [(ngModel)]="fullName" 
-         name="fullName" 
-         placeholder="Full Name" 
-         required
-         minlength="3"
-         #fullNameRef="ngModel">
+  <input type="text" [(ngModel)]="fullName" name="fullName" placeholder="Full Name" required minlength="3" #fullNameRef="ngModel">
   <div *ngIf="fullNameRef.invalid && fullNameRef.touched" class="error">
     <div *ngIf="fullNameRef.errors?.['required']">Full Name is required</div>
     <div *ngIf="fullNameRef.errors?.['minlength']">Full Name must be at least 3 characters</div>
   </div>
 
-  <input type="email" 
-         [(ngModel)]="email" 
-         name="email" 
-         placeholder="Email" 
-         required
-         #emailRef="ngModel">
+  <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required #emailRef="ngModel">
   <div *ngIf="emailRef.invalid && emailRef.touched" class="error">
     <div *ngIf="emailRef.errors?.['required']">Email is required</div>
     <div *ngIf="emailRef.errors?.['email']">Enter a valid email</div>
   </div>
 
-  <input type="password" 
-         [(ngModel)]="password" 
-         name="password" 
-         placeholder="Password" 
-         required
-         minlength="6"
-         #passwordRef="ngModel">
+  <input type="password" [(ngModel)]="password" name="password" placeholder="Password" required minlength="6" #passwordRef="ngModel">
   <div *ngIf="passwordRef.invalid && passwordRef.touched" class="error">
     <div *ngIf="passwordRef.errors?.['required']">Password is required</div>
     <div *ngIf="passwordRef.errors?.['minlength']">Password must be at least 6 characters</div>
   </div>
 
-  <label>
-    <input type="checkbox" [(ngModel)]="isOwner" name="isOwner"> Register as Owner
-  </label>
+  <label><input type="checkbox" [(ngModel)]="isOwner" name="isOwner"> Register as Owner</label>
 
   <button type="submit" [disabled]="registerForm.invalid">Register</button>
-
-  <div *ngIf="error" class="error">{{ error }}</div>
 </form>
+
+
+<p>Already have an account? <a routerLink="/login">Login here</a></p>

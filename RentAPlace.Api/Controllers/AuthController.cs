@@ -105,11 +105,12 @@ namespace RentAPlace.Api.Controllers
         }
 
         [Authorize]
-        [HttpPost("logout")]
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Clear();
-            return Ok(new { message = "Logged out Successfully" });
-        }
+[HttpPost("logout")]
+public IActionResult Logout()
+{
+    HttpContext.Session.Clear();
+    return Ok(new { message = "Logged out Successfully" });
+}
+
     }
 }

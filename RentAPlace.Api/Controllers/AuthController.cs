@@ -66,7 +66,6 @@ namespace RentAPlace.Api.Controllers
 
             var token = CreateToken(user);
 
-            //session
             HttpContext.Session.SetString("UserId", user.Id.ToString());
             HttpContext.Session.SetString("UserEmail", user.Email);
             HttpContext.Session.SetString("UserRole", user.IsOwner ? "Owner" : "User");
@@ -104,13 +103,13 @@ namespace RentAPlace.Api.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        // POST: api/auth/logout
         [Authorize]
-[HttpPost("logout")]
-public IActionResult Logout()
-{
-    HttpContext.Session.Clear();
-    return Ok(new { message = "Logged out Successfully" });
-}
-
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return Ok(new { message = "Logged out successfully" });
+        }
     }
 }

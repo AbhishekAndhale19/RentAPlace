@@ -17,53 +17,38 @@ namespace RentAPlace.Api.Controllers
             _db = db;
         }
 
-        // ========================
-        // GET: api/users/me
-        // Get logged-in user's profile
-        // ========================
+        // GET: api/users/me (profile of logged-in user)
         [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> Me()
         {
-            // Get user ID from token (either ClaimTypes.NameIdentifier or "sub")
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)
                          ?? User.FindFirstValue("sub");
 
-            if (string.IsNullOrEmpty(userId))
+            if (!Guid.TryParse(userId, out var guidId))
                 return Unauthorized(new { message = "Invalid or missing token." });
 
-            if (!Guid.TryParse(userId, out var guidId))
-                return Unauthorized(new { message = "Invalid user identifier in token." });
-
-            var user = await _db.Users
-                                .AsNoTracking()
-                                .FirstOrDefaultAsync(u => u.Id == guidId);
-
+            var user = await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == guidId);
             if (user == null)
                 return NotFound(new { message = "User not found." });
 
             return Ok(new UserResponse(user.Id, user.FullName, user.Email, user.IsOwner));
         }
 
-        // ========================
-        // GET: api/users
-        // List all users (Owner only)
-        // ========================
+        // GET: api/users (Owner only)
         [Authorize(Roles = "Owner")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var users = await _db.Users
-                                 .AsNoTracking()
-                                 .Select(u => new UserResponse(u.Id, u.FullName, u.Email, u.IsOwner))
-                                 .ToListAsync();
+                .AsNoTracking()
+                .Select(u => new UserResponse(u.Id, u.FullName, u.Email, u.IsOwner))
+                .ToListAsync();
 
             return Ok(users);
         }
     }
 
-    // ========================
-    // DTOs
-    // ========================
+    // DTO
     public record UserResponse(Guid Id, string FullName, string Email, bool IsOwner);
 }

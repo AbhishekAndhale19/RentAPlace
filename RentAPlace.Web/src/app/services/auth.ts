@@ -22,4 +22,15 @@ export class Auth {
     // returns user profile from backend using JWT if needed
     return this.http.get<User>('http://localhost:5228/api/users/me');
   }
+
+  getAllUsers(): Observable<User[]> {
+  const token = sessionStorage.getItem('token');
+  return this.http.get<User[]>(
+    'http://localhost:5228/api/users',
+    {
+      headers: { Authorization: `Bearer ${token}` }
+    }
+  );
+}
+
 }

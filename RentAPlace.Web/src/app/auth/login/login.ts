@@ -16,7 +16,9 @@ export class Login {
     password = '';
     error = '';
     success = ''; // <-- added success property
+    showPassword = false;
 
+    
     constructor(
         private auth: Auth,
         private router: Router,

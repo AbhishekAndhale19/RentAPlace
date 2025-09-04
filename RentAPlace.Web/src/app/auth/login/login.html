@@ -1,13 +1,39 @@
 <h2>Login</h2>
-<form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)">
-  <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required #emailField="ngModel">
-  <div *ngIf="emailField.invalid && emailField.touched" class="error">Email is required</div>
 
-  <input type="password" [(ngModel)]="password" name="password" placeholder="Password" required #passwordField="ngModel">
-  <div *ngIf="passwordField.invalid && passwordField.touched" class="error">Password is required</div>
+<form #loginForm="ngForm" (ngSubmit)="onLogin(loginForm)" class="login-form" novalidate>
+  <!-- Email -->
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input id="email" type="email" name="email" [(ngModel)]="email" placeholder="you@example.com" required
+      #emailField="ngModel" autocomplete="email" />
+    <div *ngIf="emailField.invalid && emailField.touched" class="error">Email is required</div>
+  </div>
 
-  <button type="submit" [disabled]="loginForm.invalid">Login</button>
+  <!-- Password with checkbox -->
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input id="password" [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="password"
+      placeholder="Enter your password" required #passwordField="ngModel" autocomplete="current-password" />
+
+    <div class="show-password">
+      <input type="checkbox" id="showPass" [(ngModel)]="showPassword" name="showPassword">
+      <label for="showPass">Show Password</label>
+    </div>
+
+    <div *ngIf="passwordField.invalid && passwordField.touched" class="error">Password is required</div>
+  </div>
+
+  <!-- Actions -->
+  <div class="form-actions">
+    <button class="btn" type="submit" [disabled]="loginForm.invalid">Login</button>
+  </div>
+
+  <!-- Messages -->
+  <div class="info-messages">
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <div *ngIf="success" class="success">{{ success }}</div>
+  </div>
 </form>
 
-
 <p>Don't have an account? <a routerLink="/register">Register here</a></p>
+<p><a routerLink="/forgot-password">Forgot password</a></p>

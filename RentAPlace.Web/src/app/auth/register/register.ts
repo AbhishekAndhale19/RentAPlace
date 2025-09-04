@@ -19,6 +19,7 @@ export class Register {
   isOwner = false;
   error = '';
   success = ''; // <-- added success property
+  showPassword = false;
 
   constructor(
     private auth: Auth,

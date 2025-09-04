@@ -111,5 +111,43 @@ namespace RentAPlace.Api.Controllers
             HttpContext.Session.Clear();
             return Ok(new { message = "Logged out successfully" });
         }
+
+        // POST: api/auth/forgot-password
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest dto)
+        {
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+            if (user == null)
+                return NotFound(new { message = "User not found." });
+
+            // Generate reset token
+            var token = Guid.NewGuid().ToString("N");
+            user.ResetToken = token;
+            user.ResetTokenExpires = DateTime.UtcNow.AddHours(1);
+
+            await _db.SaveChangesAsync();
+
+            // For demo: return token (in real app send via email)
+            return Ok(new { message = "Password reset token generated.", token });
+        }
+
+        // POST: api/auth/reset-password
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest dto)
+        {
+            var user = await _db.Users.FirstOrDefaultAsync(u =>
+                u.ResetToken == dto.Token && u.ResetTokenExpires > DateTime.UtcNow);
+
+            if (user == null)
+                return BadRequest(new { message = "Invalid or expired reset token." });
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            user.ResetToken = null;
+            user.ResetTokenExpires = null;
+
+            await _db.SaveChangesAsync();
+
+            return Ok(new { message = "Password has been reset successfully." });
+        }
     }
 }

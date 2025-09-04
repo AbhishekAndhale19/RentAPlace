@@ -12,7 +12,12 @@
     <div *ngIf="emailRef.errors?.['email']">Enter a valid email</div>
   </div>
 
-  <input type="password" [(ngModel)]="password" name="password" placeholder="Password" required minlength="6" #passwordRef="ngModel">
+  <!-- Password with Show checkbox -->
+  <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" placeholder="Password" required minlength="6" #passwordRef="ngModel">
+  <div class="show-password">
+    <input type="checkbox" id="showPassReg" [(ngModel)]="showPassword" name="showPassword">
+    <label for="showPassReg">Show Password</label>
+  </div>
   <div *ngIf="passwordRef.invalid && passwordRef.touched" class="error">
     <div *ngIf="passwordRef.errors?.['required']">Password is required</div>
     <div *ngIf="passwordRef.errors?.['minlength']">Password must be at least 6 characters</div>
@@ -22,6 +27,5 @@
 
   <button type="submit" [disabled]="registerForm.invalid">Register</button>
 </form>
-
 
 <p>Already have an account? <a routerLink="/login">Login here</a></p>

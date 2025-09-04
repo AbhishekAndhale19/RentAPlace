@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RentAPlace.Domain.Models;
 using System.Security.Claims;
+using RentAPlace.Application.DTOs.Auth;
 
 namespace RentAPlace.Api.Controllers
 {
@@ -17,7 +18,7 @@ namespace RentAPlace.Api.Controllers
             _db = db;
         }
 
-        // GET: api/users/me (profile of logged-in user)
+        // GET: api/users/me
         [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> Me()
@@ -47,8 +48,32 @@ namespace RentAPlace.Api.Controllers
 
             return Ok(users);
         }
+
+        // PATCH: api/users/change-password
+        [Authorize]
+        [HttpPatch("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest dto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                         ?? User.FindFirstValue("sub");
+
+            if (!Guid.TryParse(userId, out var guidId))
+                return Unauthorized();
+
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == guidId);
+            if (user == null)
+                return NotFound(new { message = "User not found." });
+
+            if (!BCrypt.Net.BCrypt.Verify(dto.OldPassword, user.PasswordHash))
+                return BadRequest(new { message = "Old password is incorrect." });
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            await _db.SaveChangesAsync();
+
+            return Ok(new { message = "Password changed successfully." });
+        }
     }
 
-    // DTO
+    // Response record
     public record UserResponse(Guid Id, string FullName, string Email, bool IsOwner);
 }

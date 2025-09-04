@@ -25,5 +25,9 @@ namespace RentAPlace.Domain.Models
         // Navigation properties
         public ICollection<Property> Properties { get; set; } = new List<Property>();
         public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+
+        //for reset password
+        public string? ResetToken { get; set; }
+        public DateTime? ResetTokenExpires{ get; set; }
     }
 }

@@ -63,7 +63,9 @@ builder.Services.AddSession(options =>
 
 // DbContext
 builder.Services.AddDbContext<RentAPlaceDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+    b=> b.MigrationsAssembly("RentAPlace.Application")
+    ));
 
 // JWT configuration
 var jwtCfg = builder.Configuration.GetSection("Jwt");

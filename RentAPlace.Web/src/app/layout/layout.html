@@ -1,17 +1,27 @@
+<header class="site-header">
+  <h1>RentAPlace</h1>
+  <div class="user-menu" *ngIf="user">
+    <strong>{{ user.fullName }}</strong> <small>({{ user.role }})</small>
+    <nav>
+      <a routerLink="/profile" routerLinkActive="active">Edit Profile</a> |
+      <a routerLink="/change-password" routerLinkActive="active">Change Password</a> |
+      <button (click)="logout()">Logout</button>
+    </nav>
+  </div>
+</header>
+
 <div class="layout">
   <aside class="sidebar">
-    <h2>RentAPlace</h2>
     <ul>
-      <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
-      <li><a routerLink="/profile" routerLinkActive="active">Profile</a></li>
-      <li><a routerLink="/change-password" routerLinkActive="active">Change Password</a></li>
-      <li><a routerLink="/my-properties" routerLinkActive="active">My Properties</a></li>
-      <li *ngIf="user?.isOwner"><a routerLink="/owner/users" routerLinkActive="active">Users List</a></li>
+      <li><a routerLink="/dashboard" routerLinkActive="active">📊 Dashboard</a></li>
+      <li><a routerLink="/my-properties" routerLinkActive="active">🏘 My Properties</a></li>
+      <li *ngIf="user?.role === 'Admin'">
+        <a routerLink="/owner/users" routerLinkActive="active">👥 Users List</a>
+      </li>
     </ul>
-    <button (click)="logout()">Logout</button>
   </aside>
 
   <main class="content">
-    <ng-content></ng-content>
+    <router-outlet></router-outlet>
   </main>
 </div>

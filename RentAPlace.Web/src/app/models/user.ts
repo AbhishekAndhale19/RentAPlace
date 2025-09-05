@@ -3,5 +3,6 @@ export interface User{
     fullName:string;
     email:string;
     accesstoken?:string;
-    isOwner:boolean;    
+    isOwner:boolean; 
+    role:string;   
 }

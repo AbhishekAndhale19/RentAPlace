@@ -9,13 +9,18 @@
         <th>Full Name</th>
         <th>Email</th>
         <th>Role</th>
+        <th *ngIf="isAdmin">Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let u of users">
         <td>{{ u.fullName }}</td>
         <td>{{ u.email }}</td>
-        <td>{{ u.isOwner ? 'Owner' : 'User' }}</td>
+        <td>{{ u.role }}</td>
+        <td *ngIf="isAdmin">
+          <button class="btn-edit" (click)="editUser(u)">Edit</button>
+          <button class="btn-delete" (click)="deleteUser(u)">Delete</button>
+        </td>
       </tr>
     </tbody>
   </table>

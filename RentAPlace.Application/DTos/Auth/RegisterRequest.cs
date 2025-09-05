@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using RentAPlace.Domain.Models;
 
 namespace RentAPlace.Application.DTOs.Auth
 {
@@ -16,6 +17,7 @@ namespace RentAPlace.Application.DTOs.Auth
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters.")]
         public string Password { get; set; } = string.Empty;
 
+        public UserRole Role { get; set; } = UserRole.User;
         public bool IsOwner { get; set; } = false;
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RentAPlace.Domain.Models;
 
@@ -11,9 +12,11 @@ using RentAPlace.Domain.Models;
 namespace RentAPlace.Application.Migrations
 {
     [DbContext(typeof(RentAPlaceDbContext))]
-    partial class RentAPlaceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250904183302_FixAdminSeed")]
+    partial class FixAdminSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

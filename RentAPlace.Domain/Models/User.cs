@@ -4,9 +4,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RentAPlace.Domain.Models
 {
+    public enum UserRole
+    {
+        User,   
+        Owner,
+        Admin
+    }
     public class User
     {
-        public Guid Id { get; set; } = Guid.NewGuid(); // Primary Key
+        public Guid Id { get; set; } 
 
         [Required(ErrorMessage = "Full name is required.")]
         [StringLength(100, MinimumLength = 3, ErrorMessage = "Full name must be between 3 and 100 characters.")]
@@ -20,14 +26,14 @@ namespace RentAPlace.Domain.Models
         public string PasswordHash { get; set; } = string.Empty;
 
         // Role: false = Renter (User), true = Owner
-        public bool IsOwner { get; set; } = false;
-
+        //public bool IsOwner { get; set; } = false;
+        public UserRole Role { get; set; } = UserRole.User;
         // Navigation properties
         public ICollection<Property> Properties { get; set; } = new List<Property>();
         public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 
         //for reset password
         public string? ResetToken { get; set; }
-        public DateTime? ResetTokenExpires{ get; set; }
+        public DateTime? ResetTokenExpires { get; set; }
     }
 }

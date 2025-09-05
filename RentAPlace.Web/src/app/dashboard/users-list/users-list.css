@@ -1,4 +1,4 @@
-table {
+.styled-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
@@ -8,38 +8,66 @@ table {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-thead {
+.styled-table thead {
   background: #f6f6f6;
 }
 
-th, td {
+.styled-table th,
+.styled-table td {
   padding: 0.8rem 1rem;
   text-align: left;
   border-bottom: 1px solid #eaeaea;
   font-size: 0.95rem;
 }
 
-th {
+.styled-table th {
   font-weight: 600;
   color: #333;
 }
 
-tbody tr:nth-child(even) {
+.styled-table tbody tr:nth-child(even) {
   background: #fafafa;
 }
 
-tbody tr:hover {
+.styled-table tbody tr:hover {
   background: #f0f7ff;
 }
 
-.error {
-  color: red;
-  margin: 1rem 0;
-  font-weight: 500;
+.btn-edit, .btn-delete {
+  padding: 0.3rem 0.6rem;
+  margin-right: 0.3rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.btn-edit {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-edit:hover {
+  background-color: #2980b9;
+}
+
+.btn-delete {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
 }
 
 h2 {
   margin-bottom: 1rem;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   color: #2c3e50;
+}
+
+.error {
+  color: #e74c3c;
+  margin: 1rem 0;
+  font-weight: 500;
 }

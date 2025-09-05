@@ -1,36 +1,42 @@
-import { Component } from '@angular/core';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { Auth } from '../services/auth';
 
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule],
-  templateUrl: './change-password.html'
+  imports: [CommonModule, FormsModule],
+  templateUrl: './change-password.html',
+  styleUrls: ['./change-password.css']
 })
 export class ChangePassword {
   oldPassword = '';
   newPassword = '';
-  message = '';
-  error = '';
-  showOld=false;
-  showNew=false;
+  showOld = false;
+  showNew = false;
 
-  constructor(private auth: Auth) {}
+  constructor(
+    private auth: Auth,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: any
+  ) {}
 
   onSubmit(form: NgForm) {
-    if (form.invalid) return;
+    if (form.invalid) {
+      Object.values(form.controls).forEach(c => c.markAsTouched());
+      return;
+    }
+
     this.auth.changePassword(this.oldPassword, this.newPassword).subscribe({
-      next: (res: any) => {
-        this.message = res.message;
-        this.error = '';
+      next: () => {
+        alert('Password changed successfully!');
+        // redirect to dashboard
+        this.router.navigate(['/dashboard']);
       },
-      error: () => {
-        this.error = 'Change password failed';
-        this.message = '';
-      }
+      error: (err) =>
+        alert(err.error?.message || 'Failed to change password')
     });
   }
 }

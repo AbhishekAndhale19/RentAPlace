@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-layout',
@@ -14,12 +14,26 @@ export class Layout implements OnInit {
 
   constructor(private router: Router, @Inject(PLATFORM_ID) private platformId: any) {}
 
-  ngOnInit() {
-    // load user from sessionStorage if not passed
-    if (!this.user && isPlatformBrowser(this.platformId)) {
+  ngOnInit(): void {
+  // Load user when layout starts
+  this.loadUser();
+
+  // Reload user on every navigation
+  this.router.events.subscribe(event => {
+    if (event instanceof NavigationEnd) {
+      this.loadUser();
+    }
+  });
+}
+
+
+  loadUser() {
+    if (isPlatformBrowser(this.platformId)) {
       const storedUser = sessionStorage.getItem('user');
       if (storedUser) {
         this.user = JSON.parse(storedUser);
+      } else {
+        this.user = null;
       }
     }
   }

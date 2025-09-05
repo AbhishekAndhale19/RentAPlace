@@ -1,5 +1,12 @@
 <app-layout>
-  <h2>Welcome, {{ user?.fullName }}</h2>
-  <p>Email: {{ user?.email }}</p>
-  <p>Role: {{ user?.isOwner ? 'Owner' : 'User' }}</p>
+  <div class="dashboard-welcome">
+    <h2>Welcome, {{ user?.fullName }}</h2>
+    <p>Email: {{ user?.email }}</p>
+    <p>Role: {{ user?.role }}</p>
+
+    <div class="dashboard-actions">
+      <a class="btn" routerLink="/profile">Edit Profile</a>
+      <a class="btn" routerLink="/change-password">Change Password</a>
+    </div>
+  </div>
 </app-layout>

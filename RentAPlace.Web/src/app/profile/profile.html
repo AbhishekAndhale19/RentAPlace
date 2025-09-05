@@ -1,1 +1,47 @@
-<p>profile works!</p>
+<div class="profile-page">
+  <h2>My Profile</h2>
+
+  <form #profileForm="ngForm" (ngSubmit)="updateProfile(profileForm)">
+    <div class="form-group">
+      <label for="fullName">Full Name</label>
+      <input
+        id="fullName"
+        type="text"
+        [(ngModel)]="user.fullName"
+        name="fullName"
+        required
+        minlength="3"
+        #fullNameRef="ngModel"
+      />
+      <div *ngIf="fullNameRef.invalid && fullNameRef.touched" class="error">
+        <div *ngIf="fullNameRef.errors?.['required']">Full Name is required</div>
+        <div *ngIf="fullNameRef.errors?.['minlength']">Full Name must be at least 3 characters</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        [(ngModel)]="user.email"
+        name="email"
+        required
+        #emailRef="ngModel"
+      />
+      <div *ngIf="emailRef.invalid && emailRef.touched" class="error">
+        <div *ngIf="emailRef.errors?.['required']">Email is required</div>
+        <div *ngIf="emailRef.errors?.['email']">Enter a valid email</div>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="profileForm.invalid" class="btn btn-primary">
+      Update Profile
+    </button>
+  </form>
+
+  <button (click)="router.navigate(['/change-password'])" class="btn btn-link">
+  Change Password
+</button>
+
+</div>

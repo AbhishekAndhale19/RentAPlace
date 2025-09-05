@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RentAPlace.Domain.Models;
+using RentAPlace.Api;
+{
+    
+}
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// 🔐 Swagger + JWT security definition
+//  Swagger + JWT security definition
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "RentAPlace API", Version = "v1" });
@@ -97,6 +101,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+await AdminPasswordFix.FixAsync(app.Services);
 
 // ---------------- Middleware ----------------
 if (app.Environment.IsDevelopment())

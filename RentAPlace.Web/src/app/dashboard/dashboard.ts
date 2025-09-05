@@ -6,7 +6,7 @@ import { Layout } from '../layout/layout';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule,Layout],
+  imports: [CommonModule, RouterModule, Layout],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })
@@ -21,13 +21,5 @@ export class Dashboard implements OnInit {
       if (storedUser) this.user = JSON.parse(storedUser);
       else this.router.navigate(['/login']);
     }
-  }
-
-  logout() {
-    if (isPlatformBrowser(this.platformId)) {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('user');
-    }
-    this.router.navigate(['/login']);
   }
 }

@@ -1,0 +1,35 @@
+.dashboard-welcome {
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.dashboard-welcome h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  color: #2c3e50;
+}
+
+.dashboard-welcome p {
+  margin: 0.3rem 0;
+  color: #555;
+}
+
+.dashboard-actions {
+  margin-top: 1rem;
+}
+
+.dashboard-actions .btn {
+  padding: 0.4rem 0.8rem;
+  margin-right: 0.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  background: #3498db;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.dashboard-actions .btn:hover {
+  background: #2980b9;
+}

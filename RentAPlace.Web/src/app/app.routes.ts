@@ -8,8 +8,8 @@ import { GuestGuard } from './auth/guest.guard';
 import { UsersList } from './dashboard/users-list/users-list';
 import { ForgotPassword } from './forgot-password/forgot-password';
 import { ResetPassword } from './reset-password/reset-password';
+import { Profile } from './profile/profile';   
 import { ChangePassword } from './change-password/change-password';
-
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -17,14 +17,13 @@ export const routes: Routes = [
   { path: 'login', component: Login, canActivate: [GuestGuard] },
   { path: 'register', component: Register, canActivate: [GuestGuard] },
   { path: 'dashboard', component: Dashboard, canActivate: [AuthGuard] },
-  {path:'forgot-password',component:ForgotPassword},
+  { path: 'forgot-password', component: ForgotPassword },
   { path: 'reset-password', component: ResetPassword },
   { path: 'change-password', component: ChangePassword, canActivate: [AuthGuard] },
-  
-  {path:'owner/users',component:UsersList,canActivate:[AuthGuard]},
+  { path: 'profile', component: Profile, canActivate: [AuthGuard] },
+
+  // Admin/Owner users list
+  { path: 'owner/users', component: UsersList, canActivate: [AuthGuard] },
+
   { path: '**', redirectTo: '/home' }
-
-
-
-
 ];

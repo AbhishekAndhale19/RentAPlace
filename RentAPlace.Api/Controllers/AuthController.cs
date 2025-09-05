@@ -23,35 +23,58 @@ namespace RentAPlace.Api.Controllers
             _cfg = cfg;
         }
 
-        // POST: api/auth/register
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest dto)
+        // Admin-only endpoint to view all users
+        [Authorize(Roles = "Admin")]
+        [HttpGet("all-users")]
+        public async Task<IActionResult> GetAllUsers()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var users = await _db.Users
+                .AsNoTracking()
+                .Select(u => new
+                {
+                    u.Id,
+                    u.FullName,
+                    u.Email,
+                    Role = u.Role.ToString()
+                })
+                .ToListAsync();
 
-            if (await _db.Users.AnyAsync(u => u.Email == dto.Email))
-                return Conflict(new { message = "Email already registered." });
-
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                FullName = dto.FullName,
-                Email = dto.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                IsOwner = dto.IsOwner
-            };
-
-            _db.Users.Add(user);
-            await _db.SaveChangesAsync();
-
-            return Ok(new
-            {
-                message = "Registered successfully",
-                userId = user.Id,
-                role = user.IsOwner ? "Owner" : "User"
-            });
+            return Ok(users);
         }
+
+        // POST: api/auth/register
+[HttpPost("register")]
+public async Task<IActionResult> Register([FromBody] RegisterRequest dto)
+{
+    if (!ModelState.IsValid)
+        return BadRequest(ModelState);
+
+    if (await _db.Users.AnyAsync(u => u.Email == dto.Email))
+        return Conflict(new { message = "Email already registered." });
+
+    // Assign role based on IsOwner checkbox
+    var role = dto.IsOwner ? UserRole.Owner : UserRole.User;
+
+    var user = new User
+    {
+        Id = Guid.NewGuid(),
+        FullName = dto.FullName,
+        Email = dto.Email,
+        PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+        Role = role  // <-- FIXED HERE
+    };
+
+    _db.Users.Add(user);
+    await _db.SaveChangesAsync();
+
+    return Ok(new
+    {
+        message = "Registered successfully",
+        userId = user.Id,
+        role = user.Role.ToString()
+    });
+}
+
 
         // POST: api/auth/login
         [HttpPost("login")]
@@ -68,12 +91,18 @@ namespace RentAPlace.Api.Controllers
 
             HttpContext.Session.SetString("UserId", user.Id.ToString());
             HttpContext.Session.SetString("UserEmail", user.Email);
-            HttpContext.Session.SetString("UserRole", user.IsOwner ? "Owner" : "User");
+            HttpContext.Session.SetString("UserRole", user.Role.ToString());
 
             return Ok(new
             {
                 accessToken = token,
-                user = new { user.Id, user.FullName, user.Email, isOwner = user.IsOwner }
+                user = new
+                {
+                    user.Id,
+                    user.FullName,
+                    user.Email,
+                    role = user.Role.ToString()
+                }
             });
         }
 
@@ -89,7 +118,7 @@ namespace RentAPlace.Api.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.FullName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.IsOwner ? "Owner" : "User")
+                new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 
             var token = new JwtSecurityToken(
@@ -103,7 +132,6 @@ namespace RentAPlace.Api.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        // POST: api/auth/logout
         [Authorize]
         [HttpPost("logout")]
         public IActionResult Logout()
@@ -112,7 +140,6 @@ namespace RentAPlace.Api.Controllers
             return Ok(new { message = "Logged out successfully" });
         }
 
-        // POST: api/auth/forgot-password
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest dto)
         {
@@ -120,18 +147,15 @@ namespace RentAPlace.Api.Controllers
             if (user == null)
                 return NotFound(new { message = "User not found." });
 
-            // Generate reset token
             var token = Guid.NewGuid().ToString("N");
             user.ResetToken = token;
             user.ResetTokenExpires = DateTime.UtcNow.AddHours(1);
 
             await _db.SaveChangesAsync();
 
-            // For demo: return token (in real app send via email)
             return Ok(new { message = "Password reset token generated.", token });
         }
 
-        // POST: api/auth/reset-password
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest dto)
         {

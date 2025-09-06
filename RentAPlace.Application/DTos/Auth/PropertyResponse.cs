@@ -15,5 +15,6 @@ namespace RentAPlace.Application.DTOs.Auth
         public string Type { get; set; } = string.Empty;
         public string Features { get; set; } = string.Empty;
         public List<string> Images { get; set; } = new();
+        public double AverageRating { get; set; }
     }
 }

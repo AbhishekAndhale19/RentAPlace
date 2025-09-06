@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RentAPlace.Domain.Models;
 using System.Security.Claims;
 using RentAPlace.Application.DTOs.Auth;
+using RentAPlace.Api.Services;
 
 namespace RentAPlace.Api.Controllers
 {
@@ -12,21 +13,40 @@ namespace RentAPlace.Api.Controllers
     public class ReservationsController : ControllerBase
     {
         private readonly RentAPlaceDbContext _db;
-        public ReservationsController(RentAPlaceDbContext db) => _db = db;
+        private readonly Email _email;
+        public ReservationsController(RentAPlaceDbContext db, Email email)
+        {
+            _db = db;
+            _email = email;
+        }
 
         // POST: api/reservations
         [Authorize(Roles = "User")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Reservation dto)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!Guid.TryParse(userId, out var uid)) return Unauthorized();
+            if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var uid))
+                return Unauthorized();
 
             dto.UserId = uid;
             dto.CreatedAt = DateTime.UtcNow;
 
             _db.Reservations.Add(dto);
             await _db.SaveChangesAsync();
+
+            // Send email to owner
+            var property = await _db.Properties.Include(p => p.Owner).FirstOrDefaultAsync(p => p.Id == dto.PropertyId);
+            if (property?.Owner != null)
+            {
+                await _email.SendEmailAsync(
+                    property.Owner.Email,
+                    "New Reservation Received",
+                    $"Hello {property.Owner.FullName},<br>" +
+                    $"A new reservation has been made by user ID {dto.UserId} for your property <b>{property.Title}</b>." +
+                    $"<br>Check your dashboard for details."
+                );
+            }
+
             return Ok(dto);
         }
 
@@ -35,16 +55,18 @@ namespace RentAPlace.Api.Controllers
         [HttpGet("my")]
         public async Task<IActionResult> MyReservations()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!Guid.TryParse(userId, out var uid)) return Unauthorized();
+            if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var uid))
+                return Unauthorized();
 
             var role = User.FindFirstValue(ClaimTypes.Role);
             IQueryable<Reservation> query = _db.Reservations.Include(r => r.Property);
 
-            if (role == "User")
-                query = query.Where(r => r.UserId == uid);
-            else if (role == "Owner")
-                query = query.Where(r => r.Property.OwnerId == uid);
+            query = role switch
+            {
+                "User" => query.Where(r => r.UserId == uid),
+                "Owner" => query.Where(r => r.Property.OwnerId == uid),
+                _ => query
+            };
 
             var reservations = await query.ToListAsync();
             return Ok(reservations);
@@ -98,32 +120,41 @@ namespace RentAPlace.Api.Controllers
             await _db.SaveChangesAsync();
             return Ok(new { message = "Reservation cancelled" });
         }
-        
+
         // PUT: api/reservations/{id}/status
-[Authorize(Roles = "Owner,Admin")]
-[HttpPut("{id}/status")]
-public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] ReservationStatusUpdateRequest dto)
-{
-    var reservation = await _db.Reservations.Include(r => r.Property).FirstOrDefaultAsync(r => r.Id == id);
-    if (reservation == null) return NotFound();
+        [Authorize(Roles = "Owner,Admin")]
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] ReservationStatusUpdateRequest dto)
+        {
+            var reservation = await _db.Reservations.Include(r => r.Property).Include(r => r.User).FirstOrDefaultAsync(r => r.Id == id);
+            if (reservation == null) return NotFound();
 
-    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    var role = User.FindFirstValue(ClaimTypes.Role);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var role = User.FindFirstValue(ClaimTypes.Role);
 
-    // Only property owner or admin can update status
-    if (reservation.Property.OwnerId.ToString() != userId && role != "Admin")
-        return Forbid();
+            if (reservation.Property.OwnerId.ToString() != userId && role != "Admin")
+                return Forbid();
 
-    // Validate status
-    var allowedStatuses = new[] { "Pending", "Confirmed", "Cancelled" };
-    if (!allowedStatuses.Contains(dto.Status))
-        return BadRequest(new { message = "Invalid status" });
+            var allowedStatuses = new[] { "Pending", "Confirmed", "Cancelled" };
+            if (!allowedStatuses.Contains(dto.Status))
+                return BadRequest(new { message = "Invalid status" });
 
-    reservation.Status = dto.Status;
-    await _db.SaveChangesAsync();
+            reservation.Status = dto.Status;
+            await _db.SaveChangesAsync();
 
-    return Ok(new { message = $"Reservation status updated to {dto.Status}" });
-}
+            // Send email to user if confirmed
+            if (dto.Status == "Confirmed" && reservation.User != null)
+            {
+                await _email.SendEmailAsync(
+                    reservation.User.Email,
+                    "Reservation Confirmed",
+                    $"Hello {reservation.User.FullName},<br>" +
+                    $"Your reservation for <b>{reservation.Property.Title}</b> has been confirmed by the owner."
+                );
+            }
+
+            return Ok(new { message = $"Reservation status updated to {dto.Status}" });
+        }
 
     }
 }

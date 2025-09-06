@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RentAPlace.Domain.Models;
+using RentAPlace.Api.Services;
+
 using RentAPlace.Api;
 {
     
@@ -55,6 +57,16 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+
+//email
+
+builder.Services.AddSingleton(new Email(
+    smtpHost: "smtp.gmail.com",       // or your SMTP provider
+    smtpPort: 587,
+    smtpUser: "abhishekandhale16368@gmail.com",
+    smtpPass: "iisx pwki ruoi pmai"
+));
+
 
 // Session support
 builder.Services.AddDistributedMemoryCache();

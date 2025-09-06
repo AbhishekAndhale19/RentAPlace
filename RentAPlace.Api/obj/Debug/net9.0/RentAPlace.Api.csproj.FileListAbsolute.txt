@@ -10,6 +10,7 @@ C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\obj\Debug\net9.0\RentAPlace.
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\bin\Debug\net9.0\appsettings.Development.json
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\bin\Debug\net9.0\appsettings.json
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\bin\Debug\net9.0\dist\RentAPlace.Web\prerendered-routes.json
+C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\bin\Debug\net9.0\RentAPlace.Api.staticwebassets.runtime.json
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\bin\Debug\net9.0\RentAPlace.Api.staticwebassets.endpoints.json
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\bin\Debug\net9.0\RentAPlace.Api.exe
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\bin\Debug\net9.0\RentAPlace.Api.deps.json
@@ -181,4 +182,3 @@ C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\obj\Debug\net9.0\refint\Rent
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\obj\Debug\net9.0\RentAPlace.Api.pdb
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\obj\Debug\net9.0\RentAPlace.Api.genruntimeconfig.cache
 C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\obj\Debug\net9.0\ref\RentAPlace.Api.dll
-C:\WiproTraining\Capstone\RentAPlace\RentAPlace.Api\bin\Debug\net9.0\RentAPlace.Api.staticwebassets.runtime.json

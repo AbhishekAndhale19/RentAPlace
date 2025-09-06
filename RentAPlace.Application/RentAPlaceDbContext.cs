@@ -14,6 +14,10 @@ namespace RentAPlace.Domain.Models
         public DbSet<PropertyImage> PropertyImages { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
 
+        public DbSet<Message> Messages { get; set; }
+
+        public DbSet<Rating> Ratings { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -46,6 +50,39 @@ namespace RentAPlace.Domain.Models
             modelBuilder.Entity<Property>()
                 .Property(p => p.Price)
                 .HasColumnType("decimal(18,2)");
+
+            // Message relationships
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Sender)
+                .WithMany(u => u.MessagesSent)
+                .HasForeignKey(m => m.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Receiver)
+                .WithMany(u => u.MessagesReceived)
+                .HasForeignKey(m => m.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Property)
+                .WithMany()
+                .HasForeignKey(m => m.PropertyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            //ratings
+
+            modelBuilder.Entity<Rating>()
+    .HasOne(r => r.Property)
+    .WithMany(p => p.Ratings)
+    .HasForeignKey(r => r.PropertyId)
+     .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Rating>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Ratings)
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Seed admin user
             var adminId = new Guid("11111111-1111-1111-1111-111111111111");

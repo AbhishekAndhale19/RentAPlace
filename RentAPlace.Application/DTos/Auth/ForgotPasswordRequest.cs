@@ -6,7 +6,7 @@ namespace RentAPlace.Application.DTOs.Auth
     {
         [Required, EmailAddress]
         public string Email { get; set; } = string.Empty;
+
+        
     }
-
-
 }

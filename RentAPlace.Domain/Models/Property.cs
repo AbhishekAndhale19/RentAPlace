@@ -27,5 +27,6 @@ namespace RentAPlace.Domain.Models
         public string Features { get; set; } = string.Empty; // csv/json if needed
 
         public ICollection<PropertyImage> Images { get; set; } = new List<PropertyImage>();
+        public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
     }
 }

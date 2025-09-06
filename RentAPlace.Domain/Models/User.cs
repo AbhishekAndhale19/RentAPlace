@@ -12,7 +12,7 @@ namespace RentAPlace.Domain.Models
     }
     public class User
     {
-        public Guid Id { get; set; } 
+        public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Full name is required.")]
         [StringLength(100, MinimumLength = 3, ErrorMessage = "Full name must be between 3 and 100 characters.")]
@@ -35,5 +35,13 @@ namespace RentAPlace.Domain.Models
         //for reset password
         public string? ResetToken { get; set; }
         public DateTime? ResetTokenExpires { get; set; }
+
+        //for message
+
+        public ICollection<Message> MessagesSent { get; set; } = new List<Message>();
+        public ICollection<Message> MessagesReceived { get; set; } = new List<Message>();
+    
+        public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+
     }
 }

@@ -135,7 +135,7 @@ app.UseCors("AllowAngular");
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseStaticFiles();
 app.MapControllers();
 
 // SPA fallback to index.html for client routes

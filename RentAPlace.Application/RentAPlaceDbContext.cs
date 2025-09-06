@@ -10,6 +10,8 @@ namespace RentAPlace.Domain.Models
 
         public DbSet<User> Users { get; set; }
         public DbSet<Property> Properties { get; set; }
+
+        public DbSet<PropertyImage> PropertyImages { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -21,6 +23,12 @@ namespace RentAPlace.Domain.Models
                 .HasOne(p => p.Owner)
                 .WithMany(u => u.Properties)
                 .HasForeignKey(p => p.OwnerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PropertyImage>()
+                .HasOne(pi => pi.Property)
+                .WithMany(p => p.Images)
+                .HasForeignKey(pi => pi.PropertyId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Reservation>()
